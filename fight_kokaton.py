@@ -141,7 +141,11 @@ class Bomb:
         screen.blit(self.img, self.rct)
 
 class Score:
-    def __init__(self, score):
+    def __init__(self, score: int):
+        """
+        スコアの表示を行う
+        引数 score: スコアの値
+        """
         self.score = score
         self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)
         self.img = self.fonto.render(f"スコア:{self.score}", 0, (0, 0, 255))
@@ -152,6 +156,38 @@ class Score:
     def update(self, screen: pg.Surface):
         self.img = self.fonto.render(f"スコア:{self.score}", 0, (0, 0, 255))
         screen.blit(self.img, self.rct)
+
+class Explosion:
+    """
+    爆発エフェクトに関するクラス
+    """
+    img = pg.image.load("fig/explosion.gif")
+    fimg = pg.transform.flip(img,True,True)
+    imgs = [img,fimg]
+    def __init__(self,bomb:Bomb):
+        """
+        爆発の画像のサーフェイスを作成
+        反転させたものと合わせたリストを作る。
+        エフェクトの座標を爆発した爆弾の座標に設定
+        表示時間を設定
+        引数 bomb:爆発した爆弾のrect
+        """
+        self.imgs = __class__.imgs
+        self.rct = self.imgs[0].get_rect()
+        self.rct.center = bomb.rct.center
+        self.life = 30
+        self.index = 0
+
+    def update(self,screen:pg.Surface):
+        self.life -= 1
+        if self.life >= 0:
+            screen.blit(self.imgs[self.index],self.rct)
+            if self.index == 0:
+                self.index = 1
+            else:
+                self.index = 0
+
+
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
